@@ -37,20 +37,24 @@ public class UserController {
     }
 
     @GetMapping("/user/login/{login}/{pwd}")
-    public boolean Login(@PathVariable(value = "login") String login, @PathVariable(value = "pwd") String pwd) {
+    public User Login(@PathVariable(value = "login") String login, @PathVariable(value = "pwd") String pwd) {
         List<User> l = userRepository.findAll();
+        User user = new User();
         for (int i = 0; i < l.size(); i++)
-            if (l.get(i).getLogin().equals(login) && l.get(i).getPassword().equals(pwd)) {
-                return true;
+        {
+            User u = (User) l.get(i);
+
+            if (u.getLogin().equals(login) && u.getPassword().equals(pwd)) {
+                user = userRepository.findAgentById(u.getId());
             }
-        return false;
+        }
+        return user;
     }
 
     @GetMapping("/user/getUserLogged/{login}/{pwd}")
     public Long getIdUserConnecté(@PathVariable(value = "login") String login , @PathVariable(value = "pwd") String pwd) {
         List<User> l = userRepository.findAll();
         Long id=Long.valueOf(-1);
-
         for(int i=0;i<l.size();i++)
         {
             User u=(User) l.get(i);
@@ -58,11 +62,8 @@ public class UserController {
             {
                 id = u.getId();
             }
-
         }
-
         return id;
-
     }
 
 }
